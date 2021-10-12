@@ -35,11 +35,11 @@ public struct ScrollRefresherDSL {
     }
     
     public func endHeaderRefresh() {
-        view.header?.end()
+        view.header?.beginEnd()
     }
     
     public func endLoadingMore() {
-        view.footer?.end()
+        view.footer?.beginEnd()
     }
     
     public func addHeadRefresh(

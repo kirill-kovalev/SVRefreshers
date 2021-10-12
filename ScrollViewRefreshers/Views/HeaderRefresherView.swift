@@ -8,6 +8,33 @@
 import UIKit
 
 public class HeaderRefresherView: BaseRefresherView {
+    
+    private var insetsObservation: NSKeyValueObservation!
+    
+    public override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        var isFixing = false
+        insetsObservation = scrollView?.observe(\.contentInset,
+                                                options: [.new],
+                                                changeHandler: { [weak self] view, changes in
+                                                    guard
+                                                        let self = self,
+                                                        !isFixing,
+                                                        let newValue = changes.newValue?.top,
+                                                        let oldValue = changes.oldValue?.top,
+                                                        newValue != oldValue,
+                                                        self.isExecuting == true
+                                                    else { return }
+                                                    
+                                                    isFixing = true
+                                                    
+                                                    let height = self.animator.execute + self.insets.top + self.insets.bottom
+                                                    
+                                                    self.scrollView?.contentInset.top = newValue + height
+                                                    
+                                                    isFixing = false
+                                                })
+    }
 
     
     override func scrollViewDidScroll(to offset: CGPoint) {
@@ -42,31 +69,41 @@ public class HeaderRefresherView: BaseRefresherView {
         }
     }
     
-    override func end() {
+    override func beginEnd() {
         guard isExecuting else { return }
         
+        // using delay to set minimum execution time
         let delay = Int(self.animator.endDelay * 1000)
         if delay > 0 {
             DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(delay), execute: {
-                self.animatedFinish()
+                self.endAnimated()
             })
         } else {
-            animatedFinish()
+            endAnimated()
         }
     }
     
-    private func animatedFinish() {
-        guard let scrollView = scrollView else { return }
-        super.end()
+    private func endAnimated() {
+        guard let scrollView = scrollView, isExecuting else { return }
+        
+        animator.refreshWillEnd(view: self)
+        scrollView.layoutIfNeeded()
+        
+        UIView.animate(withDuration: 0.25, animations: {
+            self.end()
+        }) { finished in
+            self.animator.refreshEnd(view: self, finish: finished)
+        }
+    }
+    
+    override func end() {
+        guard let scrollView = scrollView, isExecuting else { return }
+        
         
         let height = animator.execute + insets.top + insets.bottom
-
-        UIView.animate(withDuration: 0.25, animations: {
-            scrollView.contentInset.top -= height
-            scrollView.layoutIfNeeded()
-        }) { (finished) in
-            self.animator.refreshEnd(view: self, finish: true)
-
-        }
+        scrollView.contentInset.top -= height
+        scrollView.layoutIfNeeded()
+        
+        isExecuting = false
     }
 }

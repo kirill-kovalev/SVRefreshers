@@ -33,6 +33,11 @@ public class BaseRefresherView: UIView {
     }
     
     public override var isHidden: Bool {
+        willSet {
+            if newValue {
+                end()
+            }
+        }
         didSet {
             invalidateIntrinsicContentSize()
             scrollView?.layoutIfNeeded() // layouting uiscrollView to update Header and footer sizes
@@ -81,6 +86,8 @@ public class BaseRefresherView: UIView {
     
     
     func begin() {
+        // Checking if refresher is already executing
+        // Checking if refresher is hidden to prevent actions when not displayed 
         guard !isExecuting, !isHidden, let scrollView = scrollView else { return }
         animator.refreshBegin(view: self)
         isExecuting = true
@@ -88,12 +95,17 @@ public class BaseRefresherView: UIView {
         scrollView.layoutIfNeeded()
     }
     
-    func end() {
+    func beginEnd() {
+        // Checking if refresher is already stopped ( not executing )
         guard isExecuting, let scrollView = scrollView else { return }
         animator.refreshWillEnd(view: self)
-        isExecuting = false
         
-        scrollView.layoutIfNeeded()
+        end()
+    }
+    
+    func end() {
+        self.animator.refreshEnd(view: self, finish: true)
+        self.isExecuting = false
     }
     
     func scrollViewDidScroll(to offset: CGPoint) { }
