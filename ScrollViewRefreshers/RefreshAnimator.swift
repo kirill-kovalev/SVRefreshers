@@ -17,7 +17,6 @@ public protocol RefreshAnimator {
     
     /// Height while loading
     var execute: CGFloat { get }
-    
     /// Height while not triggered
     var hold: CGFloat { get }
     

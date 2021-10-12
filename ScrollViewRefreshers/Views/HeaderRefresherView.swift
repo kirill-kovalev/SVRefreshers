@@ -8,21 +8,18 @@
 import UIKit
 
 public class HeaderRefresherView: BaseRefresherView {
-    
-    private var isUpdating = false
+
     
     override func scrollViewDidScroll(to offset: CGPoint) {
         guard let scrollView = scrollView else { return }
         
-//        scrollView.layoutIfNeeded()
-        
         let offsets = scrollView.adjustedContentInset.top + offset.y
         
-        if offsets < -animator.trigger, !isUpdating, !scrollView.isDragging {
+        if offsets < -animator.trigger, !isExecuting, !scrollView.isDragging {
             begin()
         }
         
-        if !isUpdating {
+        if !isExecuting {
             let percent = -offsets / animator.trigger
             animator.refresh(view: self, progressDidChange: percent)
         }
@@ -30,9 +27,9 @@ public class HeaderRefresherView: BaseRefresherView {
     
     
     override func begin() {
-        guard !isUpdating, !isHidden, let scrollView = scrollView else { return }
+        guard !isExecuting, !isHidden, let scrollView = scrollView else { return }
         super.begin()
-        isUpdating = true
+        isExecuting = true
         
         setNeedsLayout()
         layoutIfNeeded()
@@ -50,8 +47,8 @@ public class HeaderRefresherView: BaseRefresherView {
     }
     
     override func end() {
-        guard isUpdating else { return }
-        isUpdating = false
+        guard isExecuting else { return }
+        isExecuting = false
         
         let delay = Int(self.animator.endDelay * 100)
         if delay > 0 {

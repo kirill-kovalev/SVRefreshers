@@ -42,15 +42,25 @@ public struct ScrollRefresherDSL {
         view.footer?.end()
     }
     
-    public func addHeadRefresh(animator: RefreshAnimator, handeler: RefreshHandler? = nil) {
+    public func addHeadRefresh(
+        animator: RefreshAnimator,
+        insets: UIEdgeInsets = .zero,
+        handeler: RefreshHandler? = nil
+    ) {
         let newHeader = HeaderRefresherView(animator: animator, handler: handeler)
+        header?.insets = insets
         header?.removeFromSuperview()
         view.addSubview(newHeader)
         DispatchQueue.main.async(execute: view.layoutIfNeeded)
     }
     
-    public func addFootRefresh(animator: RefreshAnimator, handeler: RefreshHandler? = nil) {
+    public func addFootRefresh(
+        animator: RefreshAnimator,
+        insets: UIEdgeInsets = .zero,
+        handeler: RefreshHandler? = nil
+    ) {
         let newHeader = FooterRefresherView(animator: animator, handler: handeler)
+        footer?.insets = insets
         footer?.removeFromSuperview()
         view.addSubview(newHeader)
         DispatchQueue.main.async(execute: view.layoutIfNeeded)

@@ -25,12 +25,10 @@ public class FooterRefresherView: BaseRefresherView {
         }
     }
     
-    private var isUpdating = false
-    
     override func begin() {
-        guard !isUpdating, !isHidden, let scrollView = scrollView else { return }
+        guard !isExecuting, !isHidden, let scrollView = scrollView else { return }
         super.begin()
-        isUpdating = true
+        isExecuting = true
         
         setNeedsLayout()
         layoutIfNeeded()
@@ -49,8 +47,8 @@ public class FooterRefresherView: BaseRefresherView {
     }
     
     override func end() {
-        guard isUpdating else { return }
-        isUpdating = false
+        guard isExecuting else { return }
+        isExecuting = false
         
         let delay = Int(self.animator.endDelay * 100)
         if delay > 0 {

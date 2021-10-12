@@ -9,6 +9,9 @@ import UIKit
 
 public class BaseRefresherView: UIView {
     
+    var isExecuting = false
+    public var insets: UIEdgeInsets = .zero
+    
     let handler: RefreshHandler?
     var animator: RefreshAnimator
     
@@ -25,11 +28,17 @@ public class BaseRefresherView: UIView {
 
     public override func layoutSubviews() {
         super.layoutSubviews()
-        animator.view.frame = self.bounds
+        animator.view.frame = self.bounds.inset(by: insets)
     }
     
     public override var intrinsicContentSize: CGSize {
-        .init(width: .greatestFiniteMagnitude, height: animator.hold) // isHidden ? .zero :
+        if isHidden { return .zero }
+        
+        let preferredHeight = isExecuting ? animator.execute : animator.hold
+        
+        let height = preferredHeight + insets.top + insets.bottom
+        
+        return .init(width: .greatestFiniteMagnitude, height: height)
     }
     
     public override var isHidden: Bool {
