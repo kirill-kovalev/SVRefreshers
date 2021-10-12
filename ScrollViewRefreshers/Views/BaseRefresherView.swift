@@ -10,7 +10,6 @@ import UIKit
 public class BaseRefresherView: UIView {
     
     var isExecuting = false
-    public var insets: UIEdgeInsets = .zero
     
     let handler: RefreshHandler?
     var animator: RefreshAnimator
@@ -25,6 +24,21 @@ public class BaseRefresherView: UIView {
         
         addSubview(animator.view)
     }
+    
+    public var insets: UIEdgeInsets = .zero {
+        didSet {
+            invalidateIntrinsicContentSize()
+            scrollView?.layoutIfNeeded() // layouting uiscrollView to update Header and footer sizes
+        }
+    }
+    
+    public override var isHidden: Bool {
+        didSet {
+            invalidateIntrinsicContentSize()
+            scrollView?.layoutIfNeeded() // layouting uiscrollView to update Header and footer sizes
+        }
+    }
+    
 
     public override func layoutSubviews() {
         super.layoutSubviews()
@@ -39,13 +53,6 @@ public class BaseRefresherView: UIView {
         let height = preferredHeight + insets.top + insets.bottom
         
         return .init(width: .greatestFiniteMagnitude, height: height)
-    }
-    
-    public override var isHidden: Bool {
-        didSet {
-            invalidateIntrinsicContentSize()
-            scrollView?.layoutIfNeeded() // layouting uiscrollView to update Header and footer sizes
-        }
     }
     
     private var observation: NSKeyValueObservation!
@@ -74,11 +81,19 @@ public class BaseRefresherView: UIView {
     
     
     func begin() {
+        guard !isExecuting, !isHidden, let scrollView = scrollView else { return }
         animator.refreshBegin(view: self)
+        isExecuting = true
+        
+        scrollView.layoutIfNeeded()
     }
     
     func end() {
+        guard isExecuting, let scrollView = scrollView else { return }
         animator.refreshWillEnd(view: self)
+        isExecuting = false
+        
+        scrollView.layoutIfNeeded()
     }
     
     func scrollViewDidScroll(to offset: CGPoint) { }

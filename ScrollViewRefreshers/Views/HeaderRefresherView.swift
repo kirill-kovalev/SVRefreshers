@@ -29,17 +29,13 @@ public class HeaderRefresherView: BaseRefresherView {
     override func begin() {
         guard !isExecuting, !isHidden, let scrollView = scrollView else { return }
         super.begin()
-        isExecuting = true
         
-        setNeedsLayout()
-        layoutIfNeeded()
-        
-        scrollView.layoutIfNeeded()
+        let height = animator.execute + insets.top + insets.bottom
         
         UIView.animate(withDuration: 0.25, animations: {
-            scrollView.contentInset.top += self.animator.execute
+            scrollView.contentInset.top += height
             scrollView.layoutIfNeeded()
-        }) { (finished) in
+        }) { _ in
             DispatchQueue.main.async {
                 self.handler?()
             }
@@ -48,9 +44,8 @@ public class HeaderRefresherView: BaseRefresherView {
     
     override func end() {
         guard isExecuting else { return }
-        isExecuting = false
         
-        let delay = Int(self.animator.endDelay * 100)
+        let delay = Int(self.animator.endDelay * 1000)
         if delay > 0 {
             DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(delay), execute: {
                 self.animatedFinish()
@@ -58,18 +53,20 @@ public class HeaderRefresherView: BaseRefresherView {
         } else {
             animatedFinish()
         }
-        
     }
     
     private func animatedFinish() {
         guard let scrollView = scrollView else { return }
         super.end()
-        scrollView.layoutIfNeeded()
+        
+        let height = animator.execute + insets.top + insets.bottom
+
         UIView.animate(withDuration: 0.25, animations: {
-            scrollView.contentInset.top -= self.animator.execute
+            scrollView.contentInset.top -= height
             scrollView.layoutIfNeeded()
         }) { (finished) in
             self.animator.refreshEnd(view: self, finish: true)
+
         }
     }
 }

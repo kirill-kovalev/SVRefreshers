@@ -12,32 +12,26 @@ public class FooterRefresherView: BaseRefresherView {
     override func scrollViewDidScroll(to offset: CGPoint) {
         guard let scrollView = scrollView else { return }
         
-        if scrollView.contentSize.height + scrollView.contentInset.top > scrollView.bounds.size.height {
-            
-            if scrollView.contentSize.height - scrollView.contentOffset.y + scrollView.contentInset.bottom  <= scrollView.bounds.size.height {
+        scrollView.layoutIfNeeded()
+        
+        if scrollView.contentSize.height + scrollView.adjustedContentInset.top > scrollView.bounds.size.height {
+            if scrollView.contentSize.height - scrollView.contentOffset.y + scrollView.adjustedContentInset.bottom <= scrollView.bounds.size.height {
                 begin()
             }
-        } else {
-            
-            if scrollView.contentOffset.y + scrollView.contentInset.top >= animator.trigger / 2.0 {
-                begin()
-            }
+        } else if scrollView.contentOffset.y + scrollView.adjustedContentInset.top >= animator.trigger / 2.0 {
+            begin()
         }
     }
     
     override func begin() {
         guard !isExecuting, !isHidden, let scrollView = scrollView else { return }
         super.begin()
-        isExecuting = true
         
-        setNeedsLayout()
-        layoutIfNeeded()
-        
-        scrollView.layoutIfNeeded()
+        let height = animator.execute + insets.top + insets.bottom
         
         UIView.animate(withDuration: 0.25, animations: {
-            scrollView.contentInset.bottom += self.animator.execute
-            scrollView.contentOffset.y -= self.animator.execute
+            scrollView.contentInset.bottom += height
+            scrollView.contentOffset.y -= height
             scrollView.layoutIfNeeded()
         }) { (finished) in
             DispatchQueue.main.async {
@@ -48,7 +42,6 @@ public class FooterRefresherView: BaseRefresherView {
     
     override func end() {
         guard isExecuting else { return }
-        isExecuting = false
         
         let delay = Int(self.animator.endDelay * 100)
         if delay > 0 {
@@ -63,11 +56,13 @@ public class FooterRefresherView: BaseRefresherView {
     
     private func animatedFinish() {
         guard let scrollView = scrollView else { return }
+        
+        let height = animator.execute + insets.top + insets.bottom
+        
         super.end()
-        scrollView.layoutIfNeeded()
         UIView.animate(withDuration: 0.25, animations: {
-            scrollView.contentInset.bottom -= self.animator.execute
-            scrollView.contentOffset.y += self.animator.execute
+            scrollView.contentInset.bottom -= height
+            scrollView.contentOffset.y += height
             scrollView.layoutIfNeeded()
         }) { (finished) in
             self.animator.refreshEnd(view: self, finish: true)
