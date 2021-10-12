@@ -48,7 +48,7 @@ public struct ScrollRefresherDSL {
         handeler: RefreshHandler? = nil
     ) {
         let newHeader = HeaderRefresherView(animator: animator, handler: handeler)
-        header?.insets = insets
+        newHeader.insets = insets
         header?.removeFromSuperview()
         view.addSubview(newHeader)
         DispatchQueue.main.async(execute: view.layoutIfNeeded)
@@ -59,10 +59,10 @@ public struct ScrollRefresherDSL {
         insets: UIEdgeInsets = .zero,
         handeler: RefreshHandler? = nil
     ) {
-        let newHeader = FooterRefresherView(animator: animator, handler: handeler)
-        footer?.insets = insets
+        let newFooter = FooterRefresherView(animator: animator, handler: handeler)
+        newFooter.insets = insets
         footer?.removeFromSuperview()
-        view.addSubview(newHeader)
+        view.addSubview(newFooter)
         DispatchQueue.main.async(execute: view.layoutIfNeeded)
     }
     

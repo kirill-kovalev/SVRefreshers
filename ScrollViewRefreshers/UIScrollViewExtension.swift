@@ -30,14 +30,12 @@ extension UIScrollView {
         
         if let header = header {
             header.frame.size = header.systemLayoutSizeFittingWidth(availableWidth)
-            header.frame.origin = .init(x: 0,
-                                        y: -header.frame.size.height)
+            header.frame.origin = .init(x: 0, y: -header.frame.size.height)
         }
         
         if let footer = footer {
-            footer.frame.size = systemLayoutSizeFittingWidth(availableWidth)
-            footer.frame.origin = .init(x: 0,
-                                        y: contentSize.height)
+            footer.frame.size = footer.systemLayoutSizeFittingWidth(availableWidth)
+            footer.frame.origin = .init(x: 0, y: contentSize.height)
         }
     }
 }
