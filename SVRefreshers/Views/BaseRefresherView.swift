@@ -65,9 +65,9 @@ public class BaseRefresherView: UIView {
     public override func didMoveToSuperview() {
         super.didMoveToSuperview()
         observation = scrollView?.observe(\.contentOffset,
-                                          options: [.initial, .old, .new],
+                                          options: [.old, .new],
                                           changeHandler: { [weak self] view, changes in
-                                            if let newValue = changes.newValue {
+                                            if let newValue = changes.newValue, newValue != changes.oldValue {
                                                 self?.scrollViewDidScroll(to: newValue)
                                             }
                                           })
