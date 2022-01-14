@@ -97,7 +97,7 @@ public class BaseRefresherView: UIView {
     
     func beginEnd() {
         // Checking if refresher is already stopped ( not executing )
-        guard isExecuting, let scrollView = scrollView else { return }
+        guard isExecuting else { return }
         animator.refreshWillEnd(view: self)
         
         end()
