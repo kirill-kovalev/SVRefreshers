@@ -1,0 +1,4 @@
+use_frameworks!
+target 'SVRefreshers_Tests' do
+  pod 'SVRefreshers', :path => '../'
+end

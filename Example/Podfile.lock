@@ -1,0 +1,16 @@
+PODS:
+  - SVRefreshers (0.1.0)
+
+DEPENDENCIES:
+  - SVRefreshers (from `../`)
+
+EXTERNAL SOURCES:
+  SVRefreshers:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  SVRefreshers: 0e381a28cddcd76d0fd45a08d77303524aa18266
+
+PODFILE CHECKSUM: cc4aca770804ca0e92ba5972ddac7d167c043431
+
+COCOAPODS: 1.11.2
