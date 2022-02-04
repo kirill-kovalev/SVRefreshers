@@ -42,12 +42,18 @@ public class FooterRefresherView: BaseRefresherView {
         
         scrollView.layoutIfNeeded()
         
-        if scrollView.contentSize.height + scrollView.adjustedContentInset.top > scrollView.bounds.size.height {
-            if scrollView.contentSize.height - scrollView.contentOffset.y + scrollView.adjustedContentInset.bottom <= scrollView.bounds.size.height {
+        if scrollView.contentSize.height + scrollView.adjustedContentInset.top > scrollView.frame.size.height {
+            if scrollView.contentSize.height - scrollView.contentOffset.y + scrollView.adjustedContentInset.bottom <= scrollView.frame.size.height {
+                willTrigger = true
                 begin()
+            } else {
+                willTrigger = false
             }
-        } else if scrollView.contentOffset.y + scrollView.adjustedContentInset.top >= animator.trigger - scrollView.frame.height / 2.0 {
+        } else if scrollView.contentOffset.y + scrollView.adjustedContentInset.top > animator.trigger {
+            willTrigger = true
             begin()
+        } else {
+            willTrigger = false
         }
     }
     
