@@ -42,6 +42,8 @@ public class HeaderRefresherView: BaseRefresherView {
         
         let offsets = scrollView.adjustedContentInset.top + offset.y
         
+        willTrigger = offsets < -animator.trigger - 5 && scrollView.isDragging
+        
         if offsets < -animator.trigger, !isExecuting, !scrollView.isDragging {
             begin()
         }
