@@ -23,16 +23,19 @@ public protocol RefreshAnimator {
     /// The delay time at the end of the animation, in seconds
     var endDelay: CGFloat { get }
     
-//    /// 开始刷新
+    /// refresher view triggered
     mutating func refreshBegin(view: BaseRefresherView)
-//
-//    /// 将要开始刷新
+    
+    /// refresher view is about to hide
     mutating func refreshWillEnd(view: BaseRefresherView)
-//
-//    /// 结束刷新
+    
+    /// refresher view will be triggered if scroll view released
+    mutating func refreshWillTrigger(view: BaseRefresherView, will trigger: Bool)
+
+    /// refresher view is hidden
     mutating func refreshEnd(view: BaseRefresherView, finish: Bool)
-//
-//    /// 刷新进度的变化
+
+    /// refresher progress changed
     mutating func refresh(view: BaseRefresherView, progressDidChange progress: CGFloat)
 }
 
