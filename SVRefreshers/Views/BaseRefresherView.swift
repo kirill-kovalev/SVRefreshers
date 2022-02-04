@@ -44,6 +44,12 @@ public class BaseRefresherView: UIView {
         }
     }
     
+    var willTrigger: Bool = false {
+        didSet {
+            guard oldValue != willTrigger else { return }
+            animator.refreshWillTrigger(view: self, will: willTrigger)
+        }
+    }
 
     public override func layoutSubviews() {
         super.layoutSubviews()
